@@ -201,7 +201,8 @@ if(started) return;
 started=true;
 
 /* music */
-document.getElementById("music").play();
+let music = document.getElementById("music");
+music.play().catch(()=>{});
 
 /* bloom flowers */
 ["rose","sunflower","lotus","cherry"].forEach((id,i)=>{
@@ -242,6 +243,7 @@ document.body.appendChild(petal);
 
 </body>
 </html>
+
 
 
 
