@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Caitlin</title>
+
+<style>
+
+body{
+margin:0;
+font-family: Georgia, serif;
+background:linear-gradient(120deg,#ffe6f2,#fff5f9,#ffeef4);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+overflow:hidden;
+}
+
+/* envelope container */
+#envelopeScene{
+text-align:center;
+cursor:pointer;
+}
+
+.envelope{
+width:220px;
+height:140px;
+background:#ffccd9;
+position:relative;
+border-radius:6px;
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* flap */
+.flap{
+position:absolute;
+top:0;
+left:0;
+width:0;
+height:0;
+border-left:110px solid transparent;
+border-right:110px solid transparent;
+border-bottom:70px solid #ff99b3;
+transform-origin:top;
+transition:transform 1s ease;
+}
+
+.open .flap{
+transform:rotateX(180deg);
+}
+
+.tapText{
+margin-top:15px;
+color:#c2185b;
+font-size:1.2rem;
+}
+
+/* garden scene */
+#garden{
+display:none;
+text-align:center;
+max-width:420px;
+padding:20px;
+}
+
+svg{
+width:100%;
+max-width:280px;
+cursor:pointer;
+}
+
+.bloom{
+transform:scale(0);
+transition:transform 1.5s ease;
+}
+
+.bloom.active{
+transform:scale(1);
+}
+
+.message{
+color:#a0004d;
+font-size:1.4rem;
+margin-bottom:15px;
+}
+
+.poem{
+color:#a0004d;
+font-size:1.25rem;
+line-height:1.6;
+min-height:200px;
+}
+
+/* floating petals */
+.petal{
+position:fixed;
+width:10px;
+height:10px;
+background:#ffc0cb;
+border-radius:50%;
+opacity:0.7;
+animation:float 10s linear infinite;
+}
+
+@keyframes float{
+from{transform:translateY(100vh);}
+to{transform:translateY(-10vh);}
+}
+
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8dacef1b1.mp3">
+</audio>
+
+<!-- 💌 Envelope Scene -->
+<div id="envelopeScene" onclick="openEnvelope()">
+<div class="envelope" id="envelope">
+<div class="flap"></div>
+</div>
+<div class="tapText">Tap to open 💌</div>
+</div>
+
+<!-- 🌸 Garden Scene -->
+<div id="garden">
+
+<div class="message">My dear Caitlin,</div>
+
+<svg onclick="startGarden()" viewBox="0 0 300 300">
+
+<!-- Rose -->
+<g id="rose" class="bloom">
+<circle cx="70" cy="150" r="18" fill="#ff2d55"/>
+<circle cx="70" cy="130" r="18" fill="#ff5c7a"/>
+</g>
+<line x1="70" y1="170" x2="70" y2="230" stroke="green" stroke-width="5"/>
+
+<!-- Sunflower -->
+<g id="sunflower" class="bloom">
+<circle cx="160" cy="140" r="20" fill="#5a3d00"/>
+<circle cx="160" cy="100" r="15" fill="#ffd633"/>
+<circle cx="200" cy="140" r="15" fill="#ffd633"/>
+<circle cx="160" cy="180" r="15" fill="#ffd633"/>
+<circle cx="120" cy="140" r="15" fill="#ffd633"/>
+</g>
+<line x1="160" y1="160" x2="160" y2="230" stroke="green" stroke-width="5"/>
+
+<!-- Lotus -->
+<g id="lotus" class="bloom">
+<ellipse cx="240" cy="160" rx="20" ry="30" fill="#ff99cc"/>
+<ellipse cx="220" cy="160" rx="18" ry="28" fill="#ffcce6"/>
+<ellipse cx="260" cy="160" rx="18" ry="28" fill="#ffcce6"/>
+</g>
+<line x1="240" y1="190" x2="240" y2="230" stroke="green" stroke-width="5"/>
+
+<!-- Cherry Blossom -->
+<g id="cherry" class="bloom">
+<circle cx="120" cy="70" r="12" fill="#ffd6e7"/>
+<circle cx="140" cy="90" r="12" fill="#ffd6e7"/>
+<circle cx="100" cy="90" r="12" fill="#ffd6e7"/>
+<circle cx="120" cy="110" r="12" fill="#ffd6e7"/>
+</g>
+<line x1="120" y1="110" x2="120" y2="200" stroke="brown" stroke-width="4"/>
+
+</svg>
+
+<div id="poem" class="poem"></div>
+
+</div>
+
+<script>
+
+function openEnvelope(){
+document.getElementById("envelope").classList.add("open");
+
+setTimeout(()=>{
+document.getElementById("envelopeScene").style.display="none";
+document.getElementById("garden").style.display="block";
+},1000);
+}
+
+const poemText = `If kisses were raindrops,
+I'd send you a shower,
+If hugs were seconds,
+I'd send you hours,
+If smiles were water,
+I'd send you the sea,
+And if love were a person,
+I'd send you me. ❤️`;
+
+let started=false;
+
+function startGarden(){
+
+if(started) return;
+started=true;
+
+/* music */
+document.getElementById("music").play();
+
+/* bloom flowers */
+["rose","sunflower","lotus","cherry"].forEach((id,i)=>{
+setTimeout(()=>{
+document.getElementById(id).classList.add("active");
+}, i*800);
+});
+
+setTimeout(typePoem,2000);
+createPetals();
+}
+
+function typePoem(){
+let i=0;
+let poemDiv=document.getElementById("poem");
+
+function typing(){
+if(i<poemText.length){
+poemDiv.innerHTML += poemText.charAt(i);
+i++;
+setTimeout(typing,40);
+}
+}
+typing();
+}
+
+function createPetals(){
+for(let i=0;i<15;i++){
+let petal=document.createElement("div");
+petal.className="petal";
+petal.style.left=Math.random()*100+"%";
+petal.style.animationDuration=(8+Math.random()*5)+"s";
+document.body.appendChild(petal);
+}
+}
+
+</script>
+
+</body>
+</html>
